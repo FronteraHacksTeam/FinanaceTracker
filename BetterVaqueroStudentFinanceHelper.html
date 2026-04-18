@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Vaquero Student Finance Helper</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Serif+Display&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --orange:       #BA7517;
+      --orange-light: #FAEEDA;
+      --orange-mid:   #EF9F27;
+      --orange-dark:  #633806;
+      --orange-deep:  #412402;
+      --grey-50:      #F1EFE8;
+      --grey-100:     #D3D1C7;
+      --grey-400:     #888780;
+      --grey-600:     #5F5E5A;
+      --grey-800:     #444441;
+      --grey-900:     #2C2C2A;
+      --green:        #3B6D11;
+      --red:          #A32D2D;
+      --white:        #ffffff;
+      --radius-sm:    6px;
+      --radius-md:    10px;
+      --radius-lg:    14px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      color: var(--grey-900);
+      background: var(--grey-50);
+      min-height: 100vh;
+    }
+
+    .accent-bar { height: 4px; background: var(--orange-mid); }
+
+    /* TOPBAR */
+    .topbar {
+      background: var(--orange-dark);
+      padding: 0 2rem;
+      height: 58px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .brand-logo {
+      background: var(--orange-mid); color: var(--orange-deep);
+      border-radius: var(--radius-sm); width: 34px; height: 34px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 600; flex-shrink: 0;
+    }
+    .brand-name { color: var(--orange-light); font-size: 15px; font-weight: 600; }
+    .brand-sub  { color: var(--orange-mid); font-size: 11px; }
+    .nav { display: flex; gap: 4px; }
+    .nav a {
+      font-size: 13px; color: #FAC775; text-decoration: none;
+      padding: 6px 10px; border-radius: var(--radius-sm);
+      transition: background 0.15s, color 0.15s;
+    }
+    .nav a:hover { background: rgba(255,255,255,0.1); color: var(--orange-light); }
+    .topbar-actions { display: flex; gap: 8px; }
+
+    /* BUTTONS */
+    .btn {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px; font-weight: 500;
+      padding: 7px 16px;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      border: 1.5px solid transparent;
+      transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.1s;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn-ghost    { border-color: rgba(239,159,39,0.6); color: var(--orange-light); background: transparent; }
+    .btn-ghost:hover { background: rgba(239,159,39,0.15); }
+    .btn-primary  { background: var(--orange-mid); color: var(--orange-deep); border-color: var(--orange-mid); }
+    .btn-primary:hover { background: var(--orange); border-color: var(--orange); color: var(--white); }
+    .btn-secondary { background: var(--orange-dark); color: var(--orange-light); border-color: var(--orange-dark); }
+    .btn-secondary:hover { background: var(--orange-deep); }
+    .btn-outline  { background: transparent; color: var(--orange-dark); border-color: var(--orange); }
+    .btn-outline:hover { background: var(--orange-light); }
+    .btn-danger   { background: transparent; color: var(--red); border-color: var(--red); font-size: 12px; padding: 4px 10px; }
+    .btn-danger:hover { background: #FCEBEB; }
+    .btn-full     { width: 100%; justify-content: center; }
+    .btn-sm       { font-size: 12px; padding: 5px 12px; }
+
+    /* HERO */
+    .hero {
+      padding: 3rem 2rem;
+      border-bottom: 1px solid var(--grey-100);
+      display: flex; gap: 2.5rem; align-items: flex-start;
+      background: var(--orange-light);
+    }
+    .hero-copy { flex: 1; }
+    .hero-copy h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 36px; font-weight: 400;
+      color: var(--orange-deep);
+      margin-bottom: 12px; line-height: 1.2;
+    }
+    .hero-copy p { font-size: 15px; color: var(--orange-dark); line-height: 1.65; margin-bottom: 20px; }
+    .hero-cta { display: flex; gap: 10px; margin-bottom: 20px; }
+    .badges { display: flex; gap: 6px; flex-wrap: wrap; }
+    .badge { font-size: 11px; padding: 3px 11px; border-radius: 20px; background: var(--orange-mid); color: var(--orange-deep); font-weight: 600; }
+
+    .mini-card {
+      background: var(--white);
+      border: 1.5px solid var(--orange-mid);
+      border-radius: var(--radius-lg);
+      padding: 1.1rem 1.25rem;
+      width: 250px; flex-shrink: 0;
+    }
+    .mini-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 14px; }
+    .mini-label { font-size: 11px; color: var(--grey-400); margin-bottom: 2px; }
+    .mini-value { font-size: 16px; font-weight: 600; color: var(--orange-deep); }
+    .pill { font-size: 11px; padding: 3px 9px; border-radius: 20px; background: var(--orange-light); color: var(--orange-dark); border: 1px solid var(--orange-mid); font-weight: 500; }
+    .mini-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+    .mini-box { background: var(--grey-50); border-radius: var(--radius-sm); padding: 8px; }
+    .mini-box .mini-value { font-size: 13px; }
+
+    /* LAYOUT */
+    .section { padding: 2.25rem 2rem; border-bottom: 1px solid var(--grey-100); background: var(--white); }
+    .section:nth-child(even) { background: var(--grey-50); }
+    .section-head { margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: flex-start; }
+    .section-head-text h2 { font-size: 20px; font-weight: 600; margin-bottom: 4px; }
+    .section-head-text p  { font-size: 13px; color: var(--grey-600); }
+
+    .grid3 { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px; }
+    .grid2 { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 14px; }
+    .mt-16 { margin-top: 16px; }
+
+    .feat-card {
+      background: var(--white); border: 1px solid var(--grey-100);
+      border-top: 3px solid var(--orange-mid);
+      border-radius: var(--radius-lg); padding: 1.1rem 1.25rem;
+    }
+    .feat-card h3 { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+    .feat-card p  { font-size: 13px; color: var(--grey-600); line-height: 1.55; }
+
+    /* STATS */
+    .stat { background: var(--grey-50); border: 1px solid var(--grey-100); border-radius: var(--radius-md); padding: 1rem 1.1rem; }
+    .stat-label { font-size: 12px; color: var(--grey-600); margin-bottom: 4px; }
+    .stat-value { font-size: 26px; font-weight: 600; margin-bottom: 2px; }
+    .stat-hint  { font-size: 11px; color: var(--grey-400); }
+    .stat-balance .stat-value { color: var(--orange); }
+    .stat-income  .stat-value { color: var(--green); }
+    .stat-expense .stat-value { color: var(--red); }
+
+    /* PANELS */
+    .panel { background: var(--white); border: 1px solid var(--grey-100); border-radius: var(--radius-lg); padding: 1.1rem 1.25rem; }
+    .panel-head { margin-bottom: 1rem; padding-bottom: 10px; border-bottom: 1px solid var(--grey-100); display: flex; justify-content: space-between; align-items: flex-start; }
+    .panel-head h3 { font-size: 15px; font-weight: 600; margin-bottom: 2px; }
+    .panel-head p  { font-size: 12px; color: var(--grey-400); }
+
+    /* FORM */
+    .form-row   { margin-bottom: 11px; }
+    .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 11px; }
+    .field { display: block; }
+    .field span { display: block; font-size: 12px; color: var(--grey-600); margin-bottom: 4px; font-weight: 500; }
+    .field input, .field select {
+      width: 100%; font-size: 13px; font-family: 'DM Sans', sans-serif;
+      padding: 8px 11px; border: 1.5px solid var(--grey-100);
+      border-radius: var(--radius-md); background: var(--white);
+      color: var(--grey-900); outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .field input:focus, .field select:focus { border-color: var(--orange-mid); box-shadow: 0 0 0 3px rgba(239,159,39,0.18); }
+    .form-actions { display: flex; gap: 8px; margin-top: 14px; }
+    .form-msg { font-size: 13px; padding: 8px 12px; border-radius: var(--radius-md); margin-top: 10px; display: none; }
+    .form-msg.success { background: #EAF3DE; color: #27500A; display: block; }
+    .form-msg.error   { background: #FCEBEB; color: #791F1F; display: block; }
+
+    /* TIPS */
+    .tips { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+    .tip { background: var(--orange-light); border-radius: 0 var(--radius-md) var(--radius-md) 0; border-left: 3px solid var(--orange-mid); padding: 9px 11px; }
+    .tip-title { font-size: 13px; font-weight: 600; color: var(--orange-dark); margin-bottom: 2px; }
+    .tip-text  { font-size: 12px; color: #854F0B; }
+    .divider { border-top: 1px solid var(--grey-100); margin: 12px 0; }
+    .lesson-list { display: flex; flex-direction: column; }
+    .lesson { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 1px solid var(--grey-100); text-decoration: none; color: var(--grey-900); transition: color 0.15s; }
+    .lesson:last-child { border-bottom: none; }
+    .lesson:hover .lesson-title { color: var(--orange); }
+    .lesson-title { font-size: 13px; }
+    .lesson-meta  { font-size: 12px; color: var(--grey-400); background: var(--grey-50); padding: 2px 8px; border-radius: 20px; }
+
+    /* BUDGET */
+    .budget-rows { display: flex; flex-direction: column; }
+    .budget-row { display: flex; justify-content: space-between; align-items: center; padding: 11px 0; border-bottom: 1px solid var(--grey-100); }
+    .budget-row:last-child { border-bottom: none; }
+    .budget-row-title { font-size: 14px; font-weight: 600; }
+    .budget-row-desc  { font-size: 12px; color: var(--grey-400); }
+    .budget-row-right { display: flex; align-items: center; gap: 10px; }
+    .chip  { font-size: 11px; padding: 3px 9px; border-radius: 20px; background: var(--orange-light); color: #854F0B; border: 1px solid var(--orange-mid); font-weight: 600; }
+    .money { font-size: 15px; font-weight: 600; min-width: 60px; text-align: right; }
+
+    /* GOALS */
+    .goals { display: flex; flex-direction: column; gap: 14px; margin-bottom: 14px; }
+    .goal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 7px; }
+    .goal-title  { font-size: 13px; font-weight: 600; }
+    .goal-pct    { font-size: 12px; color: var(--orange); font-weight: 600; }
+    .progress    { height: 7px; background: var(--grey-100); border-radius: 4px; overflow: hidden; margin-bottom: 4px; }
+    .progress-bar { height: 100%; background: var(--orange-mid); border-radius: 4px; transition: width 0.4s ease; }
+    .goal-meta   { font-size: 12px; color: var(--grey-400); }
+
+    /* MODAL */
+    .modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; align-items: center; justify-content: center; }
+    .modal-backdrop.open { display: flex; }
+    .modal { background: var(--white); border-radius: var(--radius-lg); padding: 1.5rem; width: 380px; max-width: 92vw; }
+    .modal h3 { font-size: 17px; font-weight: 600; margin-bottom: 16px; }
+    .modal-actions { display: flex; gap: 8px; margin-top: 16px; }
+
+    /* TRANSACTIONS TABLE */
+    .table-wrap { border-radius: var(--radius-md); overflow: hidden; border: 1px solid var(--grey-100); }
+    .table-head { display: grid; grid-template-columns: 110px 1fr 110px 110px 56px; gap: 8px; padding: 9px 14px; font-size: 12px; font-weight: 600; color: var(--grey-600); background: var(--grey-50); border-bottom: 1px solid var(--grey-100); }
+    .table-row  { display: grid; grid-template-columns: 110px 1fr 110px 110px 56px; gap: 8px; padding: 10px 14px; font-size: 13px; border-bottom: 1px solid var(--grey-100); align-items: center; background: var(--white); transition: background 0.1s; }
+    .table-row:last-child { border-bottom: none; }
+    .table-row:hover { background: var(--orange-light); }
+    .table-empty { padding: 28px 14px; text-align: center; color: var(--grey-400); font-size: 13px; background: var(--white); }
+    .right       { text-align: right; }
+    .muted       { color: var(--grey-400); }
+    .income-amt  { color: var(--green); font-weight: 600; text-align: right; }
+    .expense-amt { color: var(--red);   text-align: right; }
+
+    /* TOAST */
+    .toast { position: fixed; bottom: 24px; right: 24px; background: var(--orange-dark); color: var(--orange-light); padding: 10px 18px; border-radius: var(--radius-md); font-size: 13px; font-weight: 500; opacity: 0; transform: translateY(10px); transition: opacity 0.25s, transform 0.25s; z-index: 999; pointer-events: none; }
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    /* AUTH TABS */
+    .auth-tabs { display: flex; margin-bottom: 18px; border-bottom: 2px solid var(--grey-100); }
+    .auth-tab { flex: 1; padding: 9px; font-size: 14px; font-weight: 500; background: none; border: none; cursor: pointer; color: var(--grey-400); border-bottom: 2px solid transparent; margin-bottom: -2px; font-family: 'DM Sans', sans-serif; transition: color 0.15s; }
+    .auth-tab.active { color: var(--orange-dark); border-bottom-color: var(--orange-mid); }
+
+    /* FOOTER */
+    .footer { padding: 1.25rem 2rem; display: flex; justify-content: space-between; align-items: center; background: var(--grey-50); border-top: 1px solid var(--grey-100); }
+    .footer-links a { font-size: 13px; color: var(--grey-600); text-decoration: none; margin-left: 18px; transition: color 0.15s; }
+    .footer-links a:hover { color: var(--orange); }
+    .footer-copy { font-size: 13px; color: var(--grey-400); }
+
+    @media (max-width: 700px) {
+      .hero { flex-direction: column; }
+      .mini-card { width: 100%; }
+      .grid3, .grid2 { grid-template-columns: 1fr; }
+      .table-head, .table-row { grid-template-columns: 90px 1fr 90px 48px; }
+      .table-head > *:nth-child(3), .table-row > *:nth-child(3) { display: none; }
+      .nav { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="accent-bar"></div>
+
+<header class="topbar">
+  <a class="brand" href="#">
+    <div class="brand-logo">VS</div>
+    <div>
+      <div class="brand-name">Vaquero</div>
+      <div class="brand-sub">Student Finance Helper</div>
+    </div>
+  </a>
+  <nav class="nav">
+    <a href="#dashboard">Dashboard</a>
+    <a href="#budget">Budget</a>
+    <a href="#learn">Learn</a>
+    <a href="#transactions">Transactions</a>
+  </nav>
+  <div class="topbar-actions">
+    <button class="btn btn-ghost" onclick="openAuth('signin')">Sign in</button>
+    <button class="btn btn-primary" onclick="openAuth('signup')">Create account</button>
+  </div>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-copy">
+      <h1>Take control of your money.</h1>
+      <p>Track income and expenses, build a simple budget, and learn habits that make your money go further.</p>
+      <div class="hero-cta">
+        <a class="btn btn-secondary" href="#dashboard">Open dashboard</a>
+        <a class="btn btn-outline" href="#learn">Start learning</a>
+      </div>
+      <div class="badges">
+        <span class="badge">Allowance-friendly</span>
+        <span class="badge">Paycheck-ready</span>
+        <span class="badge">Simple goals</span>
+      </div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-row">
+        <div>
+          <div class="mini-label">This month</div>
+          <div class="mini-value" id="hero-balance">$0.00 planned</div>
+        </div>
+        <div class="pill" id="hero-status">On track</div>
+      </div>
+      <div class="mini-grid">
+        <div class="mini-box"><div class="mini-label">Income</div><div class="mini-value" id="hero-income">$0.00</div></div>
+        <div class="mini-box"><div class="mini-label">Expenses</div><div class="mini-value" id="hero-expenses">$0.00</div></div>
+        <div class="mini-box"><div class="mini-label">Savings</div><div class="mini-value" id="hero-savings">$0.00</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="section">
+    <div class="section-head"><div class="section-head-text"><h2>Everything you need to start</h2><p>Clean, simple tools that grow with you.</p></div></div>
+    <div class="grid3">
+      <article class="feat-card"><h3>Track transactions</h3><p>Add income and expenses in seconds and see where money goes.</p></article>
+      <article class="feat-card"><h3>Budget breakdown</h3><p>Plan your needs, wants, and savings with clear totals.</p></article>
+      <article class="feat-card"><h3>Learn as you go</h3><p>Short lessons and tips you can apply immediately.</p></article>
+    </div>
+  </section>
+
+  <!-- DASHBOARD -->
+  <section class="section" id="dashboard">
+    <div class="section-head"><div class="section-head-text"><h2>Dashboard</h2><p>A quick snapshot of your money this period.</p></div></div>
+    <div class="grid3">
+      <div class="stat stat-balance"><div class="stat-label">Balance</div><div class="stat-value" id="stat-balance">$0.00</div><div class="stat-hint">Income − Expenses</div></div>
+      <div class="stat stat-income"><div class="stat-label">Income</div><div class="stat-value" id="stat-income">$0.00</div><div class="stat-hint">All deposits</div></div>
+      <div class="stat stat-expense"><div class="stat-label">Expenses</div><div class="stat-value" id="stat-expenses">$0.00</div><div class="stat-hint">All spending</div></div>
+    </div>
+
+    <div class="grid2 mt-16">
+      <section class="panel">
+        <div class="panel-head"><div><h3>Add transaction</h3><p>Log income or spending to update your totals.</p></div></div>
+        <div class="form-row"><label class="field"><span>Description</span><input id="tx-desc" type="text" placeholder="e.g. Paycheck, Groceries, Gas" /></label></div>
+        <div class="form-row-2">
+          <label class="field"><span>Amount ($)</span><input id="tx-amount" type="number" step="0.01" min="0.01" placeholder="0.00" /></label>
+          <label class="field"><span>Type</span><select id="tx-type"><option value="income">Income</option><option value="expense" selected>Expense</option></select></label>
+        </div>
+        <div class="form-row-2">
+          <label class="field"><span>Category</span><select id="tx-category"><option>Needs</option><option>Wants</option><option>Savings</option><option>Debt</option><option selected>Other</option></select></label>
+          <label class="field"><span>Date</span><input id="tx-date" type="date" /></label>
+        </div>
+        <div id="tx-msg" class="form-msg"></div>
+        <div class="form-actions">
+          <button class="btn btn-primary" onclick="addTransaction()">Add transaction</button>
+          <button class="btn btn-outline" onclick="clearForm()">Clear</button>
+        </div>
+      </section>
+
+      <aside class="panel" id="learn">
+        <div class="panel-head"><div><h3>Learning tip</h3><p>Small habits make big differences.</p></div></div>
+        <div class="tips">
+          <div class="tip"><div class="tip-title">Try the 50/30/20 rule</div><div class="tip-text">Needs 50%, Wants 30%, Savings 20%.</div></div>
+          <div class="tip"><div class="tip-title">Pay yourself first</div><div class="tip-text">Move savings out right after you get paid.</div></div>
+          <div class="tip"><div class="tip-title">Make "subscriptions" visible</div><div class="tip-text">List them all. Cancel anything unused.</div></div>
+        </div>
+        <div class="divider"></div>
+        <div class="lesson-list">
+          <a href="#" class="lesson"><div class="lesson-title">Budgeting basics</div><div class="lesson-meta">5 min</div></a>
+          <a href="#" class="lesson"><div class="lesson-title">Needs vs wants</div><div class="lesson-meta">4 min</div></a>
+          <a href="#" class="lesson"><div class="lesson-title">Emergency funds</div><div class="lesson-meta">6 min</div></a>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- BUDGET -->
+  <section class="section" id="budget">
+    <div class="section-head"><div class="section-head-text"><h2>Budget plan</h2><p>Plan your money before you spend it.</p></div></div>
+    <div class="grid2">
+      <section class="panel">
+        <div class="panel-head"><div><h3>Budget breakdown</h3><p>Based on your total income.</p></div></div>
+        <div class="budget-rows">
+          <div class="budget-row"><div><div class="budget-row-title">Needs</div><div class="budget-row-desc">Rent, food, bills, transport</div></div><div class="budget-row-right"><span class="chip">50%</span><span class="money" id="budget-needs">$0.00</span></div></div>
+          <div class="budget-row"><div><div class="budget-row-title">Wants</div><div class="budget-row-desc">Fun, eating out, hobbies</div></div><div class="budget-row-right"><span class="chip">30%</span><span class="money" id="budget-wants">$0.00</span></div></div>
+          <div class="budget-row"><div><div class="budget-row-title">Savings</div><div class="budget-row-desc">Emergency fund, goals</div></div><div class="budget-row-right"><span class="chip">20%</span><span class="money" id="budget-savings">$0.00</span></div></div>
+        </div>
+      </section>
+      <aside class="panel">
+        <div class="panel-head">
+          <div><h3>Goals</h3><p>Pick one goal to focus on first.</p></div>
+          <button class="btn btn-sm btn-primary" onclick="openGoalModal()">+ Add goal</button>
+        </div>
+        <div class="goals" id="goals-list"></div>
+        <p id="no-goals-msg" style="font-size:13px;color:var(--grey-400);text-align:center;padding:16px 0;">No goals yet. Add one above!</p>
+      </aside>
+    </div>
+  </section>
+
+  <!-- TRANSACTIONS -->
+  <section class="section" id="transactions">
+    <div class="section-head">
+      <div class="section-head-text"><h2>Transactions</h2><p>Your recent activity.</p></div>
+      <button class="btn btn-sm btn-outline" onclick="clearAllTransactions()" id="clear-all-btn" style="display:none;">Clear all</button>
+    </div>
+    <div class="table-wrap">
+      <div class="table-head"><div>Date</div><div>Description</div><div>Category</div><div class="right">Amount</div><div></div></div>
+      <div id="tx-table-body"><div class="table-empty">No transactions yet. Add one above!</div></div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="footer-copy">© <span id="year"></span> Vaquero Student Finance Helper</div>
+  <div class="footer-links">
+    <a href="#learn">Learn</a>
+    <a href="#budget">Budget</a>
+    <a href="#transactions">Transactions</a>
+  </div>
+</footer>
+
+<!-- GOAL MODAL -->
+<div class="modal-backdrop" id="goal-modal">
+  <div class="modal">
+    <h3>Add a new goal</h3>
+    <div class="form-row"><label class="field"><span>Goal name</span><input id="goal-name" type="text" placeholder="e.g. Emergency fund, New laptop" /></label></div>
+    <div class="form-row"><label class="field"><span>Target amount ($)</span><input id="goal-target" type="number" step="1" min="1" placeholder="500" /></label></div>
+    <div class="form-row"><label class="field"><span>Amount already saved ($)</span><input id="goal-saved" type="number" step="1" min="0" placeholder="0" /></label></div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" onclick="saveGoal()">Save goal</button>
+      <button class="btn btn-outline" onclick="closeGoalModal()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- AUTH MODAL -->
+<div class="modal-backdrop" id="auth-modal">
+  <div class="modal">
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tab-signin" onclick="switchTab('signin')">Sign in</button>
+      <button class="auth-tab" id="tab-signup" onclick="switchTab('signup')">Create account</button>
+    </div>
+    <div id="auth-signin">
+      <div class="form-row"><label class="field"><span>Email</span><input type="email" placeholder="you@university.edu" /></label></div>
+      <div class="form-row"><label class="field"><span>Password</span><input type="password" placeholder="••••••••" /></label></div>
+      <div class="modal-actions"><button class="btn btn-primary btn-full" onclick="closeAuth()">Sign in</button></div>
+    </div>
+    <div id="auth-signup" style="display:none;">
+      <div class="form-row"><label class="field"><span>Name</span><input type="text" placeholder="Your name" /></label></div>
+      <div class="form-row"><label class="field"><span>Email</span><input type="email" placeholder="you@university.edu" /></label></div>
+      <div class="form-row"><label class="field"><span>Password</span><input type="password" placeholder="••••••••" /></label></div>
+      <div class="modal-actions"><button class="btn btn-primary btn-full" onclick="closeAuth()">Create account</button></div>
+    </div>
+    <p style="text-align:center;margin-top:14px;"><a href="#" onclick="closeAuth()" style="font-size:13px;color:var(--grey-400);">Cancel</a></p>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  var transactions = JSON.parse(localStorage.getItem('vq_tx') || '[]');
+  var goals        = JSON.parse(localStorage.getItem('vq_goals') || '[]');
+
+  document.getElementById('year').textContent = new Date().getFullYear();
+  document.getElementById('tx-date').value = todayStr();
+
+  function todayStr() { return new Date().toISOString().split('T')[0]; }
+  function fmt(v)     { return '$' + Math.abs(v).toFixed(2); }
+  function esc(s)     { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  function render() {
+    var income   = transactions.filter(function(t){ return t.type==='income'; }).reduce(function(s,t){ return s+t.amount; }, 0);
+    var expenses = transactions.filter(function(t){ return t.type==='expense'; }).reduce(function(s,t){ return s+t.amount; }, 0);
+    var balance  = income - expenses;
+
+    document.getElementById('stat-balance').textContent  = fmt(balance);
+    document.getElementById('stat-income').textContent   = fmt(income);
+    document.getElementById('stat-expenses').textContent = fmt(expenses);
+
+    document.getElementById('hero-balance').textContent  = fmt(balance) + ' planned';
+    document.getElementById('hero-income').textContent   = fmt(income);
+    document.getElementById('hero-expenses').textContent = fmt(expenses);
+    document.getElementById('hero-savings').textContent  = fmt(income * 0.20);
+
+    var statusEl = document.getElementById('hero-status');
+    if (expenses <= income) {
+      statusEl.textContent = 'On track';
+      statusEl.style.background = 'var(--orange-light)';
+      statusEl.style.color = 'var(--orange-dark)';
+    } else {
+      statusEl.textContent = 'Over budget';
+      statusEl.style.background = '#FCEBEB';
+      statusEl.style.color = 'var(--red)';
+    }
+
+    document.getElementById('budget-needs').textContent   = '$' + (income*0.50).toFixed(2);
+    document.getElementById('budget-wants').textContent   = '$' + (income*0.30).toFixed(2);
+    document.getElementById('budget-savings').textContent = '$' + (income*0.20).toFixed(2);
+
+    var tbody = document.getElementById('tx-table-body');
+    var clearBtn = document.getElementById('clear-all-btn');
+    if (transactions.length === 0) {
+      tbody.innerHTML = '<div class="table-empty">No transactions yet. Add one above!</div>';
+      clearBtn.style.display = 'none';
+    } else {
+      clearBtn.style.display = 'inline-flex';
+      var rows = '';
+      for (var ri = 0; ri < transactions.length; ri++) {
+        var idx = transactions.length - 1 - ri;
+        var t = transactions[idx];
+        var cls  = t.type === 'income' ? 'income-amt' : 'expense-amt';
+        var sign = t.type === 'income' ? '+' : '−';
+        rows += '<div class="table-row">'
+          + '<div class="muted">' + esc(t.date) + '</div>'
+          + '<div>' + esc(t.desc) + '</div>'
+          + '<div class="muted">' + esc(t.category) + '</div>'
+          + '<div class="' + cls + '">' + sign + '$' + t.amount.toFixed(2) + '</div>'
+          + '<div class="right"><button class="btn btn-danger" onclick="deleteTx(' + idx + ')">✕</button></div>'
+          + '</div>';
+      }
+      tbody.innerHTML = rows;
+    }
+
+    var gl = document.getElementById('goals-list');
+    var nm = document.getElementById('no-goals-msg');
+    if (goals.length === 0) {
+      gl.innerHTML = '';
+      nm.style.display = 'block';
+    } else {
+      nm.style.display = 'none';
+      var gs = '';
+      for (var i = 0; i < goals.length; i++) {
+        var g = goals[i];
+        var pct = Math.min(100, Math.round((g.saved / g.target) * 100));
+        gs += '<div class="goal">'
+          + '<div class="goal-header"><span class="goal-title">' + esc(g.name) + '</span><span class="goal-pct">' + pct + '%</span></div>'
+          + '<div class="progress"><div class="progress-bar" style="width:' + pct + '%"></div></div>'
+          + '<div style="display:flex;justify-content:space-between;align-items:center;">'
+          + '<span class="goal-meta">$' + g.saved.toFixed(0) + ' of $' + g.target.toFixed(0) + '</span>'
+          + '<button class="btn btn-danger" onclick="deleteGoal(' + i + ')">✕</button>'
+          + '</div></div>';
+      }
+      gl.innerHTML = gs;
+    }
+  }
+
+  function addTransaction() {
+    var desc     = document.getElementById('tx-desc').value.trim();
+    var amount   = parseFloat(document.getElementById('tx-amount').value);
+    var type     = document.getElementById('tx-type').value;
+    var category = document.getElementById('tx-category').value;
+    var date     = document.getElementById('tx-date').value;
+    var msg      = document.getElementById('tx-msg');
+    msg.className = 'form-msg';
+    if (!desc)                { setMsg(msg,'error','Please enter a description.'); return; }
+    if (!amount || amount<=0) { setMsg(msg,'error','Please enter a valid amount greater than $0.'); return; }
+    if (!date)                { setMsg(msg,'error','Please select a date.'); return; }
+    transactions.push({ desc:desc, amount:amount, type:type, category:category, date:date });
+    localStorage.setItem('vq_tx', JSON.stringify(transactions));
+    render();
+    clearForm();
+    toast((type==='income' ? '✓ Income' : '✓ Expense') + ' added successfully!');
+  }
+
+  function clearForm() {
+    document.getElementById('tx-desc').value     = '';
+    document.getElementById('tx-amount').value   = '';
+    document.getElementById('tx-type').value     = 'expense';
+    document.getElementById('tx-category').value = 'Other';
+    document.getElementById('tx-date').value     = todayStr();
+    document.getElementById('tx-msg').className  = 'form-msg';
+  }
+
+  function deleteTx(i) {
+    transactions.splice(i, 1);
+    localStorage.setItem('vq_tx', JSON.stringify(transactions));
+    render();
+    toast('Transaction removed.');
+  }
+
+  function clearAllTransactions() {
+    if (!confirm('Clear all transactions? This cannot be undone.')) return;
+    transactions = [];
+    localStorage.setItem('vq_tx', JSON.stringify(transactions));
+    render();
+    toast('All transactions cleared.');
+  }
+
+  function openGoalModal() {
+    document.getElementById('goal-name').value   = '';
+    document.getElementById('goal-target').value = '';
+    document.getElementById('goal-saved').value  = '';
+    document.getElementById('goal-modal').classList.add('open');
+  }
+  function closeGoalModal() { document.getElementById('goal-modal').classList.remove('open'); }
+
+  function saveGoal() {
+    var name   = document.getElementById('goal-name').value.trim();
+    var target = parseFloat(document.getElementById('goal-target').value);
+    var saved  = parseFloat(document.getElementById('goal-saved').value) || 0;
+    if (!name || !target || target <= 0) { alert('Please enter a goal name and a target amount.'); return; }
+    goals.push({ name:name, target:target, saved:saved });
+    localStorage.setItem('vq_goals', JSON.stringify(goals));
+    closeGoalModal();
+    render();
+    toast('Goal added!');
+  }
+
+  function deleteGoal(i) {
+    goals.splice(i, 1);
+    localStorage.setItem('vq_goals', JSON.stringify(goals));
+    render();
+    toast('Goal removed.');
+  }
+
+  function openAuth(tab) { switchTab(tab); document.getElementById('auth-modal').classList.add('open'); }
+  function closeAuth()   { document.getElementById('auth-modal').classList.remove('open'); }
+  function switchTab(tab) {
+    document.getElementById('auth-signin').style.display = tab==='signin' ? 'block' : 'none';
+    document.getElementById('auth-signup').style.display = tab==='signup' ? 'block' : 'none';
+    document.getElementById('tab-signin').classList.toggle('active', tab==='signin');
+    document.getElementById('tab-signup').classList.toggle('active', tab==='signup');
+  }
+
+  document.querySelectorAll('.modal-backdrop').forEach(function(el) {
+    el.addEventListener('click', function(e) { if (e.target===el) el.classList.remove('open'); });
+  });
+
+  function setMsg(el, type, text) { el.className = 'form-msg ' + type; el.textContent = text; }
+
+  function toast(msg) {
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(function(){ t.classList.remove('show'); }, 2600);
+  }
+
+  render();
+</script>
+</body>
+</html>
